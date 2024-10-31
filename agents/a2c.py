@@ -76,7 +76,7 @@ class A2CAgent:
         assert action in self.env.action_space, f"Returned action {action} not in action space!"
         return action
 
-    def update(self, observations, actions, rewards, terminates, next_observations):
+    def update(self, observations, actions, rewards, terminates, next_observations) -> tuple[float, float]:
         """
         Input must be batched numpy arrays.
         """
@@ -86,13 +86,6 @@ class A2CAgent:
         terminates = utils.from_numpy(terminates)
         next_observations = utils.from_numpy(next_observations)
         actions = actions.to(dtype=torch.int64)
-
-        # 归一化观测值
-        observations = (observations - observations.mean()) / (observations.std() + 1e-8)
-        next_observations = (next_observations - next_observations.mean()) / (next_observations.std() + 1e-8)
-        
-        # 归一化奖励
-        rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-8)
 
         # update critic
         with torch.no_grad():
